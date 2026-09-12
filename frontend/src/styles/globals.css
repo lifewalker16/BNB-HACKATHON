@@ -1,0 +1,224 @@
+/* ============================================================
+   RadarDev — Dark Glassmorphic Design System
+   Source: DOCUMIND_AI_REUSABLE_ASSETS.md + project extensions
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@import "tailwindcss";
+
+/* ── CSS Custom Properties ── */
+:root {
+  /* Color palette */
+  --bg-primary:       #0a0b10;
+  --bg-secondary:     #12131c;
+  --bg-surface:       rgba(22, 24, 38, 0.7);
+  --bg-surface-hover: rgba(30, 33, 52, 0.85);
+  --border-subtle:    rgba(255, 255, 255, 0.08);
+  --border-accent:    rgba(99, 102, 241, 0.3);
+
+  /* Neon brand accents */
+  --accent-primary:   #6366f1;   /* Electric Indigo */
+  --accent-secondary: #06b6d4;   /* Cyan / Teal Glow */
+  --accent-success:   #10b981;   /* Emerald */
+  --accent-warning:   #f59e0b;   /* Amber */
+  --accent-danger:    #ef4444;   /* Rose */
+
+  /* Text */
+  --text-primary:   #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted:     #64748b;
+
+  /* Glassmorphic */
+  --glass-blur:   blur(16px);
+  --card-shadow:  0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --glow-indigo:  0 0 20px rgba(99, 102, 241, 0.25);
+  --glow-cyan:    0 0 20px rgba(6, 182, 212, 0.25);
+  --glow-emerald: 0 0 20px rgba(16, 185, 129, 0.25);
+
+  /* Radii */
+  --radius-lg: 16px;
+  --radius-md: 10px;
+  --radius-sm: 6px;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ── Base Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+}
+
+/* ── Utility Classes ── */
+
+/* Glass card */
+.glass-card {
+  background: var(--bg-surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-card:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-accent);
+  box-shadow: var(--glow-indigo);
+  transform: translateY(-2px);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Neon button */
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-primary), #4f46e5);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 12px 24px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--glow-indigo);
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Secondary button */
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-md);
+  padding: 11px 24px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-secondary:hover {
+  background: var(--bg-surface);
+  border-color: var(--accent-primary);
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.badge-indigo  { background: rgba(99, 102, 241, 0.15); color: var(--accent-primary); border: 1px solid rgba(99, 102, 241, 0.3); }
+.badge-cyan    { background: rgba(6, 182, 212, 0.15);  color: var(--accent-secondary); border: 1px solid rgba(6, 182, 212, 0.3); }
+.badge-green   { background: rgba(16, 185, 129, 0.15); color: var(--accent-success);  border: 1px solid rgba(16, 185, 129, 0.3); }
+.badge-amber   { background: rgba(245, 158, 11, 0.15); color: var(--accent-warning);  border: 1px solid rgba(245, 158, 11, 0.3); }
+.badge-red     { background: rgba(239, 68, 68, 0.15);  color: var(--accent-danger);   border: 1px solid rgba(239, 68, 68, 0.3); }
+
+/* Source / citation cards (from DocuMind reference) */
+.sources-container { margin-top: 16px; }
+.sources-header { margin-bottom: 12px; }
+.sources-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 99px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+}
+.sources-subtitle { font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; }
+.sources-list { display: flex; flex-direction: column; gap: 8px; }
+
+.source-card {
+  background: rgba(17, 19, 31, 0.8);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.source-card:hover { border-color: var(--border-accent); background: var(--bg-surface); }
+.source-expanded  { border-color: var(--accent-primary) !important; }
+
+.source-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.source-num      { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; }
+.source-sub      { font-size: 0.75rem; color: var(--accent-primary); font-weight: 600; }
+.source-author   { font-size: 0.72rem; color: var(--text-secondary); }
+.source-upvotes  { font-size: 0.72rem; color: var(--accent-success); }
+.source-relevance { font-size: 0.72rem; color: var(--accent-secondary); margin-left: auto; }
+.source-post-title { font-size: 0.78rem; color: var(--text-primary); font-style: italic; margin-bottom: 6px; }
+.source-excerpt  { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; border-left: 2px solid var(--border-accent); padding-left: 10px; }
+.source-link     { display: inline-block; margin-top: 8px; font-size: 0.75rem; color: var(--accent-secondary); text-decoration: none; }
+.source-link:hover { text-decoration: underline; }
+
+/* Animated loading pulse */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(99, 102, 241, 0.2); }
+  50%       { box-shadow: 0 0 20px rgba(99, 102, 241, 0.5); }
+}
+.pulse-loading { animation: pulse-glow 2s ease-in-out infinite; }
+
+/* Score bar animation */
+@keyframes fill-bar {
+  from { width: 0%; }
+  to   { width: var(--bar-width); }
+}
+.score-bar-fill { animation: fill-bar 1s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+/* Fade-in for page content */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fade-up 0.4s ease forwards; }
+
+/* Monospace for terminal / code */
+.mono { font-family: var(--font-mono); }
+
+/* Scrollbar */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb  { background: var(--border-accent); border-radius: 3px; }

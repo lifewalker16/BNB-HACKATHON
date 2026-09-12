@@ -1,234 +1,46 @@
-# 🚀 SkillGap AI — Market-Validated Skill Gap Engine
+# RadarDev — SkillBridge AI
 
-> Build smarter career roadmaps using real-world discussions from Reddit and AI.
-
-SkillGap AI is a hackathon project that transforms thousands of public Reddit career discussions into personalized learning roadmaps. Instead of relying on generic AI advice, it identifies recurring skills, technologies, interview topics, and career recommendations shared by developers and professionals across Reddit communities.
+**BnB Hackathon 2026** | [Live Demo](https://radardev.vercel.app) | [AI Agent Hub](https://radardev.vercel.app/ai-agent-hub)
 
 ---
 
-## 🌟 Problem Statement
+## 🌐 Live Access
 
-Students and job seekers spend hours browsing Reddit threads like:
-
-* "How do I get into Razorpay as a Backend Engineer?"
-* "What skills do companies actually expect in 2026?"
-* "Frontend roadmap after React?"
-* "How did you crack your first software job?"
-
-The advice is valuable—but scattered across hundreds of posts and comments.
-
-**SkillGap AI** converts those discussions into a structured roadmap backed by community insights.
+You can access the live web application directly without local installation:
+- **Main App**: [https://radardev.vercel.app](https://radardev.vercel.app)
+- **AI Agent Hub**: [https://radardev.vercel.app/ai-agent-hub](https://radardev.vercel.app/ai-agent-hub)
 
 ---
 
-## 💡 Solution
+## 🚀 How to Run Locally
 
-A user enters:
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v18.x or higher)
+- `npm` (bundled with Node.js)
 
-* Target role (Backend Engineer, Data Scientist, Product Manager, etc.)
-* Target company (Razorpay, Swiggy, TCS, Zoho, etc.)
-* Current skill level.
+### Setup & Launch
 
-The application:
+1. **Navigate to the frontend directory**:
+   ```bash
+   cd frontend
+   ```
 
-1. Searches relevant public Reddit discussions using the Reddit Data API.
-2. Extracts recurring skills, tools, interview topics, and learning advice.
-3. Uses AI to cluster similar recommendations.
-4. Generates a personalized roadmap ordered by priority.
-5. Links every insight back to the original Reddit discussions.
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
----
+3. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
 
-## ✨ Features
-
-* 🔍 AI-powered Reddit discussion search.
-* 📊 Community-validated skill extraction.
-* 🧠 Personalized skill-gap analysis.
-* 🗺️ Dynamic learning roadmap generation.
-* 🔗 Direct links to original Reddit discussions.
-* ⚡ Read-only Reddit API integration.
-* 🎯 Designed for hackathon prototype usage.
+4. **Access the application**:
+   Open [http://localhost:3000](http://localhost:3000) in your web browser.
 
 ---
 
-## 🧱 How It Works
-
-```text
-User Query
-     │
-     ▼
-Reddit Data API
-     │
-     ▼
-Relevant Posts & Comments
-     │
-     ▼
-AI Processing Layer
-     │
- ├── Skill Extraction
- ├── Topic Clustering
- ├── Priority Ranking
- └── Roadmap Generator
-     │
-     ▼
-Personalized Career Roadmap
-```
-
----
-
-## 🛠 Tech Stack
-
-| Layer              | Technology                        |
-| ------------------ | --------------------------------- |
-| Frontend           | React / Next.js                   |
-| Backend            | Node.js + Express                 |
-| AI                 | OpenAI API                        |
-| Reddit Integration | Reddit Data API (Read-only OAuth) |
-| Authentication     | OAuth (if required)               |
-| Hosting            | Vercel / Render                   |
-| Version Control    | Git & GitHub                      |
-
----
-
-## 🎯 Example Use Cases
-
-### Example 1 — Backend Engineer at Razorpay
-
-**Input**
-
-* Role: Backend Engineer
-* Company: Razorpay
-* Skills: Java, SQL
-
-**Generated Roadmap**
-
-* Data Structures & Algorithms
-* System Design Fundamentals
-* Redis & Caching
-* Docker & Kubernetes
-* REST APIs
-* Distributed Systems
-* Mock Interview Preparation
-
-Every recommendation includes Reddit discussions where developers mentioned those skills.
-
----
-
-### Example 2 — Data Analyst
-
-The engine identifies recurring recommendations such as:
-
-* SQL
-* Python
-* Power BI
-* Statistics
-* Excel
-* Portfolio Projects
-* Case Study Interviews
-
-Then builds a learning roadmap from beginner to interview-ready.
-
----
-
-## 📂 Project Structure
-
-```
-BNB-HACKATHON/
-│
-├── frontend/
-├── backend/
-├── components/
-├── services/
-├── utils/
-├── public/
-├── docs/
-└── README.md
-```
-
----
-
-## ⚙️ Getting Started
-
-### Clone the repository
-
-```bash
-git clone https://github.com/lifewalker16/BNB-HACKATHON.git
-cd BNB-HACKATHON
-```
-
-### Install dependencies
-
-```bash
-npm install
-```
-
-### Configure environment variables
-
-Create a `.env` file.
-
-```env
-OPENAI_API_KEY=your_key
-REDDIT_CLIENT_ID=your_client_id
-REDDIT_CLIENT_SECRET=your_client_secret
-REDDIT_USER_AGENT=SkillGapAI-Hackathon/1.0
-```
-
-### Start development server
-
-```bash
-npm run dev
-```
-
----
-
-## 🔐 Reddit API Usage
-
-This project uses the Reddit Data API with **read-only access**.
-
-The application:
-
-* Searches publicly available posts and comments.
-* Retrieves discussions only after a user submits a search.
-* Generates summaries in real time.
-* Does **not** post, comment, vote, or message on Reddit.
-* Does **not** train AI models on Reddit content.
-
----
-
-## 🖥 Demo Flow
-
-1. User selects a target role.
-2. AI searches relevant Reddit discussions.
-3. Skills are extracted and ranked.
-4. A personalized roadmap is generated.
-5. User can open original Reddit discussions for context.
-
----
-
-## 📈 Future Improvements
-
-* Resume skill-gap comparison.
-* Company-specific interview preparation.
-* Salary trend insights from community discussions.
-* Learning resource recommendations.
-* Multi-platform feedback aggregation (GitHub, Stack Overflow, Hacker News).
-
----
-
-## 🌍 Impact
-
-SkillGap AI helps students and job seekers learn **what the community actually recommends**, not just what a generic roadmap suggests.
-
-Instead of reading hundreds of Reddit posts, users receive an evidence-backed roadmap generated from recurring community insights.
-
----
-
-## 👥 Team
-
-Built during the **BNB Chain AI Hackathon** as an open-source hackathon prototype.
-
----
-
-## 📄 License
-
-This project is open source and intended for educational and hackathon purposes.
+## 🛠️ Frontend Tech Stack
+- **Framework**: Next.js 15 (App Router), React 19
+- **Graph & DAG Visualizations**: `@xyflow/react`
+- **Styling & UI**: Tailwind CSS, Lucide Icons

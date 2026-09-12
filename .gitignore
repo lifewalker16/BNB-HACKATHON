@@ -1,0 +1,18 @@
+# Ignore everything in the repository root by default
+/*
+
+# Whitelist root files needed for GitHub
+!/.gitignore
+!/README.md
+
+# Whitelist frontend directory
+!/frontend/
+
+# Ensure frontend dependencies and build outputs are ignored
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.vercel/
+frontend/.env*
+frontend/*.tsbuildinfo
