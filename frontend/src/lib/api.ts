@@ -280,10 +280,16 @@ export interface ResearchProgressEvent {
   message?: string;
 }
 
+const DEFAULT_HEADERS: Record<string, string> = {
+  'ngrok-skip-browser-warning': 'true',
+};
+
 // ── API Functions ─────────────────────────────────────────────
 
 export async function getTrendingRoles(): Promise<TrendingRolesResponse> {
-  const res = await fetch(`${API_URL}/api/v1/roadmap/trending-roles`);
+  const res = await fetch(`${API_URL}/api/v1/roadmap/trending-roles`, {
+    headers: { ...DEFAULT_HEADERS },
+  });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: res.statusText }));
     throw new Error(err.detail || 'Failed to fetch trending roles');
@@ -298,7 +304,7 @@ export async function recommendTimeline(
 ): Promise<DynamicTimelineRecommendation> {
   const res = await fetch(`${API_URL}/api/v1/roadmap/recommend-timeline`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { ...DEFAULT_HEADERS, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       target_role: targetRole,
       background_description: backgroundDescription,
@@ -313,7 +319,9 @@ export async function recommendTimeline(
 }
 
 export async function getHiringCompanies(role: string): Promise<RoleCompanyDiscoveryResponse> {
-  const res = await fetch(`${API_URL}/api/v1/roadmap/hiring-companies?role=${encodeURIComponent(role)}`);
+  const res = await fetch(`${API_URL}/api/v1/roadmap/hiring-companies?role=${encodeURIComponent(role)}`, {
+    headers: { ...DEFAULT_HEADERS },
+  });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: res.statusText }));
     throw new Error(err.detail || 'Failed to fetch hiring companies');
@@ -324,7 +332,7 @@ export async function getHiringCompanies(role: string): Promise<RoleCompanyDisco
 export async function generateRoadmap(req: RoadmapRequest): Promise<RoadmapResponse> {
   const res = await fetch(`${API_URL}/api/v1/roadmap/generate`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { ...DEFAULT_HEADERS, 'Content-Type': 'application/json' },
     body: JSON.stringify(req),
   });
   if (!res.ok) {
@@ -345,7 +353,7 @@ export async function generateRoadmapStream(
   try {
     const res = await fetch(`${API_URL}/api/v1/roadmap/generate-stream`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...DEFAULT_HEADERS, 'Content-Type': 'application/json' },
       body: JSON.stringify(req),
     });
 
@@ -396,7 +404,9 @@ export async function generateRoadmapStream(
 }
 
 export async function getRoadmap(roadmapId: string): Promise<RoadmapResponse> {
-  const res = await fetch(`${API_URL}/api/v1/roadmap/${roadmapId}`);
+  const res = await fetch(`${API_URL}/api/v1/roadmap/${roadmapId}`, {
+    headers: { ...DEFAULT_HEADERS },
+  });
   if (!res.ok) throw new Error(`Roadmap not found: ${roadmapId}`);
   return res.json();
 }
@@ -409,7 +419,7 @@ export async function getMockQuestions(
 ): Promise<MockQuestionsResponse> {
   const res = await fetch(`${API_URL}/api/v1/mock/questions`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { ...DEFAULT_HEADERS, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       milestone_label: milestoneLabel,
       difficulty,
@@ -431,7 +441,7 @@ export async function evaluateMockAnswers(
 ): Promise<MockEvaluateResponse> {
   const res = await fetch(`${API_URL}/api/v1/mock/evaluate`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { ...DEFAULT_HEADERS, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       milestone_id: milestoneId,
       milestone_label: milestoneLabel,
@@ -538,6 +548,7 @@ export async function analyzeResume(
 
   const res = await fetch(`${API_URL}/api/v1/analyze-resume`, {
     method: 'POST',
+    headers: { ...DEFAULT_HEADERS },
     body: formData,
   });
   if (!res.ok) {
@@ -548,7 +559,9 @@ export async function analyzeResume(
 }
 
 export async function checkHealth(): Promise<{ status: string; nlp_loaded: boolean; embedder_loaded: boolean }> {
-  const res = await fetch(`${API_URL}/api/v1/health`);
+  const res = await fetch(`${API_URL}/api/v1/health`, {
+    headers: { ...DEFAULT_HEADERS },
+  });
   if (!res.ok) throw new Error('Backend unavailable');
   return res.json();
 }
