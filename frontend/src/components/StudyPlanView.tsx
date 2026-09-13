@@ -1,16 +1,35 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { type StudyPlan, type RoadmapResponse } from '@/lib/api';
+import { useRouter } from 'next/navigation';
+import { type StudyPlan, type RoadmapResponse, type WeeklyPlan } from '@/lib/api';
 
 interface Props {
   roadmap: RoadmapResponse;
 }
 
 export default function StudyPlanView({ roadmap }: Props) {
+  const router = useRouter();
   const plan = roadmap.study_plan;
   const [completedDays, setCompletedDays] = useState<Record<number, boolean>>({});
   const [copied, setCopied] = useState(false);
+
+  const handleStartWeekMock = (week: WeeklyPlan) => {
+    // Compile rich syllabus context for this week
+    let syllabusText = `Week ${week.week_number}: ${week.theme}\nGoal: ${week.goal}\nFocus Milestone: ${week.focus_milestone}\n`;
+    week.days.forEach(d => {
+      syllabusText += `- Day ${d.day_number} (${d.weekday || 'Mon'}): ${d.title}. Key concepts: ${d.key_concepts.join(', ')}. Practice: ${d.practice_task}\n`;
+    });
+    if (week.reddit_gotchas && week.reddit_gotchas.length > 0) {
+      syllabusText += `Reddit gotchas: ${week.reddit_gotchas.map(g => g.warning).join('; ')}\n`;
+    }
+
+    sessionStorage.setItem('mock_node_id', `week-${week.week_number}`);
+    sessionStorage.setItem('mock_node_label', week.focus_milestone || week.theme);
+    sessionStorage.setItem('mock_syllabus_context', syllabusText);
+    sessionStorage.setItem('mock_target_role', roadmap.target_role || '');
+    router.push('/mock-test');
+  };
 
   // Load checklist state from localStorage
   useEffect(() => {
@@ -44,7 +63,8 @@ export default function StudyPlanView({ roadmap }: Props) {
       md += `## Week ${week.week_number}: ${week.theme}\n`;
       md += `*Goal*: ${week.goal}\n\n`;
       week.days.forEach((day) => {
-        md += `### Day ${day.day_number}: ${day.title} (${day.estimated_hours}h)\n`;
+        const weekdayTag = day.weekday ? ` (${day.weekday})` : '';
+        md += `### Day ${day.day_number}${weekdayTag}: ${day.title} (${day.estimated_hours}h)\n`;
         md += `- **Concepts**: ${day.key_concepts.join(', ')}\n`;
         md += `- **Practice**: ${day.practice_task}\n\n`;
       });
@@ -205,15 +225,32 @@ export default function StudyPlanView({ roadmap }: Props) {
                       style={{ marginTop: 4, cursor: 'pointer', accentColor: 'var(--accent-primary)' }}
                     />
                     <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
-                        <span style={{
-                          fontSize: '0.88rem',
-                          fontWeight: 700,
-                          color: isChecked ? '#10b981' : 'var(--text-primary)',
-                          textDecoration: isChecked ? 'line-through' : 'none',
-                        }}>
-                          Day {day.day_number}: {day.title}
-                        </span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4, flexWrap: 'wrap', gap: 6 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          {day.weekday && (
+                            <span style={{
+                              fontSize: '0.68rem',
+                              fontWeight: 800,
+                              padding: '2px 7px',
+                              borderRadius: 6,
+                              background: 'rgba(99, 102, 241, 0.18)',
+                              color: 'var(--accent-primary)',
+                              border: '1px solid rgba(99, 102, 241, 0.35)',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.04em',
+                            }}>
+                              {day.weekday}
+                            </span>
+                          )}
+                          <span style={{
+                            fontSize: '0.88rem',
+                            fontWeight: 700,
+                            color: isChecked ? '#10b981' : 'var(--text-primary)',
+                            textDecoration: isChecked ? 'line-through' : 'none',
+                          }}>
+                            Day {day.day_number}: {day.title}
+                          </span>
+                        </div>
                         <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
                           ⏱ {day.estimated_hours} hrs
                         </span>
@@ -255,6 +292,7 @@ export default function StudyPlanView({ roadmap }: Props) {
                 border: '1px solid rgba(239, 68, 68, 0.25)',
                 borderRadius: 10,
                 padding: '10px 14px',
+                marginBottom: '1.2rem',
               }}>
                 <p style={{ fontSize: '0.75rem', fontWeight: 700, color: '#f87171', margin: 0, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
                   ⚠️ Community Traps to Avoid ({week.reddit_gotchas[0].source_subreddit}):
@@ -264,6 +302,27 @@ export default function StudyPlanView({ roadmap }: Props) {
                 </p>
               </div>
             )}
+
+            {/* Test Week Knowledge Button */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => handleStartWeekMock(week)}
+                className="btn-secondary"
+                style={{
+                  padding: '8px 16px',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  borderColor: 'rgba(99, 102, 241, 0.4)',
+                  color: 'var(--text-primary)',
+                  background: 'rgba(99, 102, 241, 0.08)',
+                }}
+              >
+                <span>🎯</span> Test Week {week.week_number} Knowledge ({week.focus_milestone}) →
+              </button>
+            </div>
           </div>
         ))}
       </div>

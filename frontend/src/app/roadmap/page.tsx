@@ -56,8 +56,25 @@ function RoadmapContent() {
   const handleStartMockTest = useCallback((nodeId: string, nodeLabel: string) => {
     sessionStorage.setItem('mock_node_id', nodeId);
     sessionStorage.setItem('mock_node_label', nodeLabel);
+    if (roadmap) {
+      sessionStorage.setItem('mock_target_role', roadmap.target_role || '');
+      // Try finding matching week in study_plan
+      const matchingWeek = roadmap.study_plan?.weekly_schedule?.find(
+        w => (w.focus_milestone && w.focus_milestone.toLowerCase().includes(nodeLabel.toLowerCase())) ||
+             (nodeLabel.toLowerCase().includes(w.theme.toLowerCase()))
+      );
+      if (matchingWeek) {
+        let syllabusText = `Week ${matchingWeek.week_number}: ${matchingWeek.theme}\nGoal: ${matchingWeek.goal}\n`;
+        matchingWeek.days.forEach(d => {
+          syllabusText += `- Day ${d.day_number} (${d.weekday || 'Mon'}): ${d.title}. Key concepts: ${d.key_concepts.join(', ')}. Practice: ${d.practice_task}\n`;
+        });
+        sessionStorage.setItem('mock_syllabus_context', syllabusText);
+      } else {
+        sessionStorage.removeItem('mock_syllabus_context');
+      }
+    }
     router.push('/mock-test');
-  }, [router]);
+  }, [roadmap, router]);
 
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

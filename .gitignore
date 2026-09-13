@@ -1,18 +1,78 @@
-# Ignore everything in the repository root by default
-/*
+# ==============================================================================
+# Git Ignore Configuration for BNB-HACKATHON (RadarDev — SkillBridge AI)
+# ==============================================================================
 
-# Whitelist root files needed for GitHub
+# ------------------------------------------------------------------------------
+# 1. Root Level Whitelist (Only track specified core modules & files)
+# ------------------------------------------------------------------------------
+/*
 !/.gitignore
 !/README.md
-
-# Whitelist frontend directory
+!/backend/
+!/database/
 !/frontend/
+!/reddit-unofficial-api/
+!/scraper/
 
-# Ensure frontend dependencies and build outputs are ignored
-frontend/node_modules/
-frontend/.next/
-frontend/out/
-frontend/build/
-frontend/.vercel/
-frontend/.env*
-frontend/*.tsbuildinfo
+# ------------------------------------------------------------------------------
+# 2. Environment Variables & Secrets (CRITICAL: Never commit credentials)
+# ------------------------------------------------------------------------------
+.env
+.env.*
+*.env
+*.env.local
+*.env.production
+*.env.development
+*.env.test
+
+# ------------------------------------------------------------------------------
+# 3. Node.js / JavaScript / TypeScript Dependencies & Build Artifacts
+# ------------------------------------------------------------------------------
+**/node_modules/
+**/.next/
+**/out/
+**/build/
+**/dist/
+**/.vercel/
+**/*.tsbuildinfo
+**/.turbo/
+**/.cache/
+
+# ------------------------------------------------------------------------------
+# 4. Python Bytecode, Caches & Virtual Environments
+# ------------------------------------------------------------------------------
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.coverage
+**/htmlcov/
+**/venv/
+**/.venv/
+**/env/
+**/ENV/
+**/dist/
+**/build/
+**/*.egg-info/
+
+# ------------------------------------------------------------------------------
+# 5. Logs, Diagnostics & Temp Files
+# ------------------------------------------------------------------------------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ------------------------------------------------------------------------------
+# 6. Operating System & IDE Specific Files
+# ------------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/

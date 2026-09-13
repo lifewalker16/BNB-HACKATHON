@@ -43,6 +43,7 @@ export interface FlowEdge {
 
 export interface DailyTopic {
   day_number: number;
+  weekday?: string;
   title: string;
   estimated_hours: number;
   key_concepts: string[];
@@ -167,6 +168,8 @@ export interface MockQuestion {
   id: string;
   text: string;
   type: string;
+  tested_concept?: string;
+  difficulty?: string;
 }
 
 export interface MockQuestionsResponse {
@@ -179,11 +182,40 @@ export interface MockAnswer {
   answer: string;
 }
 
+export interface MockQuestionEvaluation {
+  question_id: string;
+  question_text: string;
+  question_type: string;
+  tested_concept?: string;
+  user_answer: string;
+  ideal_answer: string;
+  score: number;
+  verdict: 'Strong' | 'Adequate' | 'Needs Review' | 'Critical Gap' | string;
+  strengths: string[];
+  missing_points: string[];
+  feedback: string;
+  action_items: string[];
+}
+
+export interface MockActionItem {
+  id: string;
+  topic: string;
+  severity: 'High' | 'Medium' | 'Low' | string;
+  action_text: string;
+  recommended_study_day?: string;
+}
+
 export interface MockEvaluateResponse {
   readiness_score: number;
   overall_verdict: string;
   identified_weaknesses: string[];
   remedial_roadmap?: RoadmapResponse | null;
+  executive_summary?: string;
+  category_scores?: Record<string, number>;
+  detailed_questions?: MockQuestionEvaluation[];
+  action_checklist?: MockActionItem[];
+  strengths?: string[];
+  critical_gaps?: string[];
 }
 
 export interface ATSComponentScores {
@@ -371,12 +403,19 @@ export async function getRoadmap(roadmapId: string): Promise<RoadmapResponse> {
 
 export async function getMockQuestions(
   milestoneLabel: string,
-  difficulty = 'Beginner'
+  difficulty = 'Beginner',
+  syllabusContext?: string,
+  targetRole?: string
 ): Promise<MockQuestionsResponse> {
   const res = await fetch(`${API_URL}/api/v1/mock/questions`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ milestone_label: milestoneLabel, difficulty }),
+    body: JSON.stringify({
+      milestone_label: milestoneLabel,
+      difficulty,
+      syllabus_context: syllabusContext,
+      target_role: targetRole,
+    }),
   });
   if (!res.ok) throw new Error('Failed to load questions');
   return res.json();
@@ -385,15 +424,108 @@ export async function getMockQuestions(
 export async function evaluateMockAnswers(
   milestoneId: string,
   milestoneLabel: string,
-  answers: MockAnswer[]
+  answers: MockAnswer[],
+  syllabusContext?: string,
+  targetRole?: string,
+  difficulty = 'Beginner'
 ): Promise<MockEvaluateResponse> {
   const res = await fetch(`${API_URL}/api/v1/mock/evaluate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ milestone_id: milestoneId, milestone_label: milestoneLabel, answers }),
+    body: JSON.stringify({
+      milestone_id: milestoneId,
+      milestone_label: milestoneLabel,
+      answers,
+      syllabus_context: syllabusContext,
+      target_role: targetRole,
+      difficulty,
+    }),
   });
   if (!res.ok) throw new Error('Evaluation failed');
   return res.json();
+}
+
+export function generateMockSummaryText(result: MockEvaluateResponse, milestoneLabel: string): string {
+  const lines: string[] = [
+    '==================================================',
+    ` RADARDEV TECHNICAL INTERVIEW EVALUATION REPORT `,
+    '==================================================',
+    `Milestone:       ${milestoneLabel}`,
+    `Readiness Score: ${result.readiness_score}/100`,
+    `Overall Verdict: ${result.overall_verdict}`,
+    `Date Generated:  ${new Date().toLocaleDateString()}`,
+    '',
+    '--------------------------------------------------',
+    ' EXECUTIVE SUMMARY',
+    '--------------------------------------------------',
+    result.executive_summary || 'No executive summary provided.',
+    '',
+  ];
+
+  if (result.category_scores && Object.keys(result.category_scores).length > 0) {
+    lines.push('--------------------------------------------------');
+    lines.push(' CATEGORY SCORE BREAKDOWN');
+    lines.push('--------------------------------------------------');
+    Object.entries(result.category_scores).forEach(([cat, val]) => {
+      lines.push(`${cat.toUpperCase().padEnd(16)}: ${val}%`);
+    });
+    lines.push('');
+  }
+
+  if (result.strengths && result.strengths.length > 0) {
+    lines.push('--------------------------------------------------');
+    lines.push(' TOP STRENGTHS');
+    lines.push('--------------------------------------------------');
+    result.strengths.forEach((s, idx) => lines.push(`${idx + 1}. [STRONG] ${s}`));
+    lines.push('');
+  }
+
+  if (result.critical_gaps && result.critical_gaps.length > 0) {
+    lines.push('--------------------------------------------------');
+    lines.push(' CRITICAL GAPS & KNOWLEDGE DEFICITS');
+    lines.push('--------------------------------------------------');
+    result.critical_gaps.forEach((g, idx) => lines.push(`${idx + 1}. [GAP] ${g}`));
+    lines.push('');
+  }
+
+  if (result.detailed_questions && result.detailed_questions.length > 0) {
+    lines.push('--------------------------------------------------');
+    lines.push(' QUESTION-BY-QUESTION DEEP DIVE');
+    lines.push('--------------------------------------------------');
+    result.detailed_questions.forEach((dq, idx) => {
+      lines.push(`\n[Q${idx + 1}] (${dq.question_type.toUpperCase()}) Score: ${dq.score}/100 [${dq.verdict}]`);
+      lines.push(`Question: ${dq.question_text}`);
+      lines.push(`Candidate Answer:\n${dq.user_answer || '(No answer provided)'}`);
+      lines.push(`Ideal Benchmark Answer:\n${dq.ideal_answer}`);
+      if (dq.strengths && dq.strengths.length > 0) {
+        lines.push(`What went well: ${dq.strengths.join(', ')}`);
+      }
+      if (dq.missing_points && dq.missing_points.length > 0) {
+        lines.push(`What was missing: ${dq.missing_points.join(', ')}`);
+      }
+      if (dq.feedback) {
+        lines.push(`Feedback: ${dq.feedback}`);
+      }
+    });
+    lines.push('');
+  }
+
+  if (result.action_checklist && result.action_checklist.length > 0) {
+    lines.push('--------------------------------------------------');
+    lines.push(' ACTIONABLE REVISION CHECKLIST');
+    lines.push('--------------------------------------------------');
+    result.action_checklist.forEach((item, idx) => {
+      const dayStr = item.recommended_study_day ? ` [${item.recommended_study_day}]` : '';
+      lines.push(`[ ] (${item.severity}) ${item.topic}${dayStr}: ${item.action_text}`);
+    });
+    lines.push('');
+  }
+
+  lines.push('==================================================');
+  lines.push(' Generated by RadarDev AI Career Co-Pilot');
+  lines.push('==================================================');
+
+  return lines.join('\n');
 }
 
 export async function analyzeResume(
